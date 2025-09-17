@@ -20,13 +20,13 @@ const Home = () => {
                 AI Text Editor
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
-                Start writing your masterpiece here...
+                Start writing your masterpiece now...
               </p>
             </div>
 
             <div className="h-full sm:h-[calc(100%-5rem)] overflow-hidden">
               <TextEditor 
-                initialContent="<h1>Welcome to the Future</h1><p>Start writing your story here. This editor supports rich text formatting, headings, lists, and more.</p>"
+                initialContent="<h1>Welcome to the Future</h1><p>Start writing here. This AI enabled editor supports rich text formatting, headings, lists, and more.</p>"
                 onContentChange={(content) => {
                   console.log('Content changed:', content);
                 }}
