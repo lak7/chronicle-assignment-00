@@ -50,7 +50,7 @@ export const Sidebar: React.FC = () => {
   }, [model]);
 
   return (
-    <div className="border border-zinc-300/25 rounded-lg h-full flex flex-col overflow-hidden">
+    <div className=" glass-sidebar border border-zinc-300/25 rounded-lg h-full flex flex-col overflow-hidden">
       <div className="p-3 flex-1 overflow-y-auto flex flex-col gap-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -80,7 +80,7 @@ export const Sidebar: React.FC = () => {
               const next = parseInt(e.target.value || '0', 10);
               if (!Number.isNaN(next)) setMaxTokensLocal(next);
             }}
-            className="h-9 text-sm"
+            className="h-9 text-sm glass-sidebar border border-zinc-300/15"
           />
         </div>
 
@@ -92,7 +92,7 @@ export const Sidebar: React.FC = () => {
                 key={m}
                 size="sm"
                 variant={m === model ? 'default' : 'outline'}
-                className={m === model ? 'bg-primary text-primary-foreground' : 'border-primary/30 hover:border-primary/60'}
+                className={m === model ? 'bg-primary text-primary-foreground' : 'glass-siebar border border-zinc-300/15  hover:border-primary/60'}
                 onClick={() => setModelLocal(m)}
               >
                 {m}
@@ -118,10 +118,10 @@ export const Sidebar: React.FC = () => {
             value={instructions}
             onChange={(e) => setInstructions(e.target.value)}
             className={
-              `min-h-[250px] resize-y ` +
+              `min-h-[250px] resize-y glass-sidebar` +
               (useInstructions
-                ? ' ring-emerald-500 focus-visible:ring-emerald-500 border-emerald-500'
-                : ' ring-orange-500 focus-visible:ring-orange-500 border-orange-500')
+                ? ' '
+                : ' ')
             }
           />
         </div>

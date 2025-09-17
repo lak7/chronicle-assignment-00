@@ -19,9 +19,12 @@ import {
   Undo,
   Redo,
   Type,
+  Copy,
 } from 'lucide-react';
 import { useMachine } from '@xstate/react';
 import { continueWritingMachine } from '../lib/continueWritingMachine';
+import { defaultMarkdownSerializer } from 'prosemirror-markdown';
+import { useToast } from '../hooks/use-toast';
 
 interface EditorToolbarProps {
   editorView: EditorView;
@@ -33,6 +36,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   editorState,
 }) => {
   const [state, send] = useMachine(continueWritingMachine);
+  const { toast } = useToast();
 
   const executeCommand = (command: any) => {
     if (command(editorState, editorView.dispatch, editorView)) {
@@ -81,6 +85,16 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   const schema = editorState.schema;
 
   const isGenerating = state.matches('generating');
+
+  const handleCopyMarkdown = async () => {
+    try {
+      const markdown = defaultMarkdownSerializer.serialize(editorState.doc);
+      await navigator.clipboard.writeText(markdown);
+      toast({ title: 'Copied', description: 'Editor content copied as Markdown.' });
+    } catch (error) {
+      toast({ title: 'Copy failed', description: 'Could not copy to clipboard.' });
+    }
+  };
 
   // When generation succeeds, insert the generated text at the current selection
   useEffect(() => {
@@ -252,7 +266,18 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
         </Button>
       </div>
         </div>
-        <div className="">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleCopyMarkdown}
+            className="h-7 px-2 hover:bg-transparent hover:text-primary"
+          >
+            <span className="flex items-center gap-2">
+              <Copy className="h-3 w-3" />
+              <span className="text-sm font-medium">Copy</span>
+            </span>
+          </Button>
           <Button
             onClick={() => {
               const content = editorView.state.doc.textContent;
@@ -264,11 +289,15 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
               'Generating…'
             ) : (
               <span className="flex items-center gap-2">
-                <span>Continue Writing</span>
-                <span className="ml-2 text-[15px] leading-none ">⇧ + ↵</span>
+                <span className="text-sm font-medium tracking-wide">Continue Writing</span>
+                <span className="ml-2 inline-flex items-center gap-1">
+                  <kbd className="px-1.5 py-0.5 rounded border bg-white text-md font-mono shadow-sm">⇧</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-white text-md font-mono shadow-sm">↵</kbd>
+                </span>
               </span>
             )}
           </Button>
+          
         </div>
       </div>
       

@@ -128,6 +128,7 @@ All colors MUST be HSL.
     transition: all 0.3s ease;
   }
 
+
   .glass-panel:hover {
     border-color: hsl(var(--primary) / 0.6);
     box-shadow: var(--shadow-glass), var(--shadow-glow);
@@ -135,10 +136,10 @@ All colors MUST be HSL.
 
   .glass-sidebar {
     background: var(--gradient-glass);
-    backdrop-filter: blur(30px);
-    border: 1px solid hsl(var(--glass-border) / 0.4);
+    backdrop-filter: blur(40px) saturate(125%);
+    border: 1px solid hsl(var(--glass-border) / 0.55);
     border-radius: var(--radius);
-    box-shadow: var(--shadow-glass);
+    box-shadow: 0 10px 36px hsl(0 0% 0% / 0.55);
   }
 
   .glass-editor {
@@ -160,4 +161,38 @@ All colors MUST be HSL.
       linear-gradient(90deg, hsl(var(--glass-border) / 0.03) 1px, transparent 1px);
     background-size: 40px 40px;
   }
+
+  /* Subtle, Apple-like liquid glass background glow overlay */
+  .liquid-glass-bg {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .liquid-glass-bg::before {
+    content: "";
+    position: absolute;
+    inset: -15%;
+    pointer-events: none;
+    background:
+      radial-gradient(900px 500px at 10% -10%, hsl(var(--primary) / 0.10), transparent 60%),
+      radial-gradient(800px 450px at 85% 110%, hsl(var(--secondary) / 0.08), transparent 60%),
+      radial-gradient(1100px 600px at 50% 20%, hsl(var(--accent) / 0.08), transparent 60%);
+    filter: saturate(120%) blur(0.3px);
+    animation: liquid-glass-drift 36s ease-in-out infinite alternate;
+    will-change: transform;
+    z-index: 0;
+  }
+
+  @keyframes liquid-glass-drift {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(-2%, 1%, 0) scale(1.02);
+    }
+    100% {
+      transform: translate3d(2%, -1%, 0) scale(1.03);
+    }
+  }
+
 }
