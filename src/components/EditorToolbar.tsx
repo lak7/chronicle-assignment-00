@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { EditorView } from 'prosemirror-view';
 import { EditorState } from 'prosemirror-state';
 import { toggleMark, setBlockType, wrapIn, lift } from 'prosemirror-commands';
@@ -20,6 +20,8 @@ import {
   Redo,
   Type,
 } from 'lucide-react';
+import { useMachine } from '@xstate/react';
+import { continueWritingMachine } from '../lib/continueWritingMachine';
 
 interface EditorToolbarProps {
   editorView: EditorView;
@@ -30,6 +32,8 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   editorView,
   editorState,
 }) => {
+  const [state, send] = useMachine(continueWritingMachine);
+
   const executeCommand = (command: any) => {
     if (command(editorState, editorView.dispatch, editorView)) {
       editorView.focus();
@@ -76,9 +80,25 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
   const schema = editorState.schema;
 
+  const isGenerating = state.matches('generating');
+
+  // When generation succeeds, insert the generated text at the current selection
+  useEffect(() => {
+    if (state.matches('success') && state.context.generatedText) {
+      const textToInsert = `${editorView.state.selection.empty ? ' ' : ''}${state.context.generatedText}`;
+      const { from, to } = editorView.state.selection;
+      const tr = editorView.state.tr.insertText(textToInsert, Math.max(from, to));
+      editorView.dispatch(tr);
+      editorView.focus();
+      send({ type: 'RESET' });
+    }
+  }, [state, editorView, send]);
+
   return (
     <div className="flex items-center gap-1 p-2 border-b border-glass-border/30 bg-muted/20 flex-wrap">
-      {/* Text formatting */}
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center gap-1 p-2">
+          {/* Text formatting */}
       <div className="flex items-center gap-1">
         <Button
           variant={isMarkActive(schema.marks.strong) ? "default" : "ghost"}
@@ -207,6 +227,17 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           <Redo className="h-3 w-3" />
         </Button>
       </div>
+        </div>
+        <div className="">
+          <Button
+            onClick={() => send({ type: 'GENERATE' })}
+            disabled={isGenerating}
+          >
+            {isGenerating ? 'Generating…' : 'Continue Writing'}
+          </Button>
+        </div>
+      </div>
+      
     </div>
   );
 };
