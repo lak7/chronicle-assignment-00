@@ -14,9 +14,7 @@ export async function generateContinuationWithOpenAI(
       throw new Error('Missing OPENAI_API_KEY');
     }
 
-    const model = 'gpt-4o-mini';
-    const temperature =  0.8;
-    const maxTokens = 128;
+    const { model, temperature, maxTokens } = getAiConfig();
 
     // Note: dangerouslyAllowBrowser exposes the API key in the client bundle.
     // Use only for local testing and replace with a server-side proxy in production.

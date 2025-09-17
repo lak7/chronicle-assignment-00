@@ -15,7 +15,7 @@ const Home = () => {
           <div className="border border-zinc-300/25 rounded-lg h-full overflow-hidden">
             <div className="p-4 border-b border-zinc-300/25">
               <h1 className="text-xl font-bold glow-text">
-                Heading 1
+                Ultimate Text Editor
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
                 Start writing your masterpiece here...
