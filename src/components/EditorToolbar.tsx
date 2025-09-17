@@ -230,7 +230,10 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
         </div>
         <div className="">
           <Button
-            onClick={() => send({ type: 'GENERATE' })}
+            onClick={() => {
+              const content = editorView.state.doc.textContent;
+              send({ type: 'GENERATE', input: { existingText: content } });
+            }}
             disabled={isGenerating}
           >
             {isGenerating ? 'Generating…' : 'Continue Writing'}

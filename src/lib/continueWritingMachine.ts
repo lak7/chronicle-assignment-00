@@ -1,5 +1,6 @@
 import { fromPromise, setup } from 'xstate';
 import { generateMockContinuation } from './aiMock';
+import { generateContinuationWithOpenAI } from './openaiWriter';
 
 export interface ContinueWritingContext {
   generatedText: string;
@@ -7,7 +8,7 @@ export interface ContinueWritingContext {
 }
 
 export type ContinueWritingEvents =
-  | { type: 'GENERATE' }
+  | { type: 'GENERATE'; input: { existingText: string } }
   | { type: 'RESET' };
 
 export const continueWritingMachine = setup({
@@ -16,9 +17,8 @@ export const continueWritingMachine = setup({
     events: {} as ContinueWritingEvents,
   },
   actors: {
-    generateText: fromPromise(async () => {
-      const text = await generateMockContinuation();
-      return text;
+    generateText: fromPromise(async ({ input }: { input: { existingText: string } }) => {
+      return generateContinuationWithOpenAI(input.existingText);
     }),
   },
 }).createMachine({
@@ -38,7 +38,7 @@ export const continueWritingMachine = setup({
     generating: {
       invoke: {
         src: 'generateText',
-        input: {},
+        input: ({ event }) => ({ existingText: (event as any).input?.existingText ?? '' }),
         onDone: {
           target: 'success',
           actions: ({ event, context }) => {
