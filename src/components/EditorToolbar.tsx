@@ -94,6 +94,30 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
     }
   }, [state, editorView, send]);
 
+  // Trigger Continue Writing on Shift+Enter within the editor
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && event.shiftKey) {
+        event.preventDefault();
+        if (!isGenerating) {
+          const content = editorView.state.doc.textContent;
+          send({ type: 'GENERATE', input: { existingText: content } });
+        }
+      }
+    };
+
+    const editorDom = editorView.dom as HTMLElement | undefined;
+    if (editorDom) {
+      editorDom.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      if (editorDom) {
+        editorDom.removeEventListener('keydown', handleKeyDown);
+      }
+    };
+  }, [editorView, send, isGenerating]);
+
   return (
     <div className="flex items-center gap-1 p-2 border-b border-glass-border/30 bg-muted/20 flex-wrap">
       <div className="flex items-center justify-between w-full">
@@ -236,7 +260,14 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             }}
             disabled={isGenerating}
           >
-            {isGenerating ? 'Generating…' : 'Continue Writing'}
+            {isGenerating ? (
+              'Generating…'
+            ) : (
+              <span className="flex items-center gap-2">
+                <span>Continue Writing</span>
+                <span className="ml-2 text-[15px] leading-none ">⇧ + ↵</span>
+              </span>
+            )}
           </Button>
         </div>
       </div>

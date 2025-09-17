@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { getAiConfig } from './aiConfig';
 
 
 export async function generateContinuationWithOpenAI(
@@ -21,8 +22,13 @@ export async function generateContinuationWithOpenAI(
     // Use only for local testing and replace with a server-side proxy in production.
     const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 
-    const system =
+    const baseSystem =
       'You are a helpful writing assistant. Continue the user\'s text naturally, matching tone and style, without repeating the prompt. Provide a concise next paragraph.';
+
+    const { instructionsEnabled, instructionsText } = getAiConfig();
+    const system = instructionsEnabled && instructionsText.trim().length > 0
+      ? `${baseSystem}\n\nAdditional guidance from user: ${instructionsText.trim()}`
+      : baseSystem;
 
     const user = `Continue writing from here:\n\n${existingText}\n\nContinue:`;
 
