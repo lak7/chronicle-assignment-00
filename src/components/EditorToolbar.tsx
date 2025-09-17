@@ -110,6 +110,10 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
   // Trigger Continue Writing on Shift+Enter within the editor
   useEffect(() => {
+    // Disable the Shift+Enter shortcut on phones
+    const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+    if (isMobile) return;
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Enter' && event.shiftKey) {
         event.preventDefault();
@@ -134,8 +138,9 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
   return (
     <div className="flex items-center gap-1 p-2 border-b border-glass-border/30 bg-muted/20 flex-wrap">
-      <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-1 p-2">
+      <div className="flex items-center justify-between w-full flex-wrap gap-2">
+        {/* Toolbar group: formatting, headings, blocks, history */}
+        <div className="order-2 sm:order-1 flex items-center gap-1 p-2">
           {/* Text formatting */}
       <div className="flex items-center gap-1">
         <Button
@@ -266,36 +271,38 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
         </Button>
       </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleCopyMarkdown}
-            className="h-7 px-2 hover:bg-transparent hover:text-primary"
-          >
-            <span className="flex items-center gap-2">
-              <Copy className="h-3 w-3" />
-              <span className="text-sm font-medium">Copy</span>
-            </span>
-          </Button>
+        {/* Actions group: Copy and Continue (reordered on mobile) */}
+        <div className="order-1 sm:order-2 flex items-center gap-2">
           <Button
             onClick={() => {
               const content = editorView.state.doc.textContent;
               send({ type: 'GENERATE', input: { existingText: content } });
             }}
             disabled={isGenerating}
+            className="order-1 sm:order-2"
           >
             {isGenerating ? (
               'Generating…'
             ) : (
               <span className="flex items-center gap-2">
                 <span className="text-sm font-medium tracking-wide">Continue Writing</span>
-                <span className="ml-2 inline-flex items-center gap-1">
+                <span className="ml-2 hidden sm:inline-flex items-center gap-1">
                   <kbd className="px-1.5 py-0.5 rounded border bg-white text-md font-mono shadow-sm">⇧</kbd>
                   <kbd className="px-1.5 py-0.5 rounded border bg-white text-md font-mono shadow-sm">↵</kbd>
                 </span>
               </span>
             )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleCopyMarkdown}
+            className="order-2 sm:order-1 h-7 px-2 hover:bg-transparent hover:text-primary"
+          >
+            <span className="flex items-center gap-2">
+              <Copy className="h-3 w-3" />
+              <span className="text-sm font-medium">Copy</span>
+            </span>
           </Button>
           
         </div>
