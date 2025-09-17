@@ -14,7 +14,7 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <div className="glass-sidebar h-full flex flex-col overflow-hidden">
+    <div className="border border-zinc-300/50 rounded-lg h-full flex flex-col overflow-hidden">
       {/* Header */}
       <div className="p-3 border-b border-glass-border/30">
         <Button 

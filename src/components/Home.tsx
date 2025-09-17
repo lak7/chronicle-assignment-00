@@ -12,7 +12,7 @@ const Home = () => {
 
         {/* Editor - 75% width */}
         <div className="flex-1 min-w-0">
-          <div className="glass-editor h-full overflow-hidden">
+          <div className="border border-zinc-300/50 rounded-lg h-full overflow-hidden">
             <div className="p-4 border-b border-glass-border/30">
               <h1 className="text-xl font-bold glow-text">
                 Chapter 1
