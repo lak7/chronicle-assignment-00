@@ -26,7 +26,7 @@ const Home = () => {
 
             <div className="h-full sm:h-[calc(100%-5rem)] overflow-hidden">
               <TextEditor 
-                initialContent="<h1>Welcome to the Future</h1><p>Start writing here. This AI enabled editor supports rich text formatting, headings, lists, and more.</p>"
+                initialContent="<h1>Start Writing Now...</h1>"
                 onContentChange={(content) => {
                   console.log('Content changed:', content);
                 }}
