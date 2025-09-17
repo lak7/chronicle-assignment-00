@@ -1,7 +1,7 @@
 import React from 'react';
 import { EditorView } from 'prosemirror-view';
 import { EditorState } from 'prosemirror-state';
-import { toggleMark, setBlockType } from 'prosemirror-commands';
+import { toggleMark, setBlockType, wrapIn, lift } from 'prosemirror-commands';
 import { wrapInList, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { undo, redo } from 'prosemirror-history';
 import { Button } from './ui/button';
@@ -47,6 +47,31 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   const isBlockActive = (nodeType: any, attrs = {}) => {
     const { $from, to } = editorState.selection;
     return to <= $from.end() && $from.parent.hasMarkup(nodeType, attrs);
+  };
+
+  const isNodeActive = (nodeType: any) => {
+    const { $from } = editorState.selection;
+    for (let depth = $from.depth; depth > 0; depth--) {
+      if ($from.node(depth).type === nodeType) return true;
+    }
+    return false;
+  };
+
+  const toggleBlockquote = () => {
+    const active = isNodeActive(schema.nodes.blockquote);
+    const command = active ? lift : wrapIn(schema.nodes.blockquote);
+    executeCommand(command);
+  };
+
+  const isInList = (listType: any) => isNodeActive(listType);
+
+  const toggleList = (listType: any) => {
+    const inThisList = isInList(listType);
+    if (inThisList) {
+      executeCommand(liftListItem(schema.nodes.list_item));
+    } else {
+      executeCommand(wrapInList(listType));
+    }
   };
 
   const schema = editorState.schema;
@@ -129,12 +154,9 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
       {/* Block elements */}
       <div className="flex items-center gap-1">
         <Button
-          variant="ghost"
+          variant={isNodeActive(schema.nodes.blockquote) ? "default" : "ghost"}
           size="sm"
-          onClick={() => {
-            const command = setBlockType(schema.nodes.blockquote);
-            executeCommand(command);
-          }}
+          onClick={toggleBlockquote}
           className="h-7 w-7 p-0"
         >
           <Quote className="h-3 w-3" />
@@ -142,9 +164,9 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
         {schema.nodes.bullet_list && (
           <Button
-            variant="ghost"
+            variant={isNodeActive(schema.nodes.bullet_list) ? "default" : "ghost"}
             size="sm"
-            onClick={() => executeCommand(wrapInList(schema.nodes.bullet_list))}
+            onClick={() => toggleList(schema.nodes.bullet_list)}
             className="h-7 w-7 p-0"
           >
             <List className="h-3 w-3" />
@@ -153,9 +175,9 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
         {schema.nodes.ordered_list && (
           <Button
-            variant="ghost"
+            variant={isNodeActive(schema.nodes.ordered_list) ? "default" : "ghost"}
             size="sm"
-            onClick={() => executeCommand(wrapInList(schema.nodes.ordered_list))}
+            onClick={() => toggleList(schema.nodes.ordered_list)}
             className="h-7 w-7 p-0"
           >
             <ListOrdered className="h-3 w-3" />

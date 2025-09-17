@@ -14,9 +14,9 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <div className="border border-zinc-300/50 rounded-lg h-full flex flex-col overflow-hidden">
+    <div className="border border-zinc-300/25 rounded-lg h-full flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-3 border-b border-glass-border/30">
+      <div className="p-3 border-b border-zinc-300/25">
         <Button 
           className="w-full justify-start text-sm h-9 border-primary/30 hover:border-primary/60 hover:bg-primary/10"
           variant="outline"
@@ -30,7 +30,6 @@ export const Sidebar: React.FC = () => {
       <div className="p-3 space-y-2 flex-1 overflow-y-auto">
         <div className="flex items-center justify-between text-xs font-medium text-muted-foreground mb-3">
           <span>Published</span>
-          <span className="bg-muted/50 px-2 py-0.5 rounded text-xs">6</span>
         </div>
         
         <div className="space-y-1">
@@ -74,21 +73,6 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Actions */}
-      <div className="p-3 border-t border-glass-border/30 space-y-1">
-        <Button variant="ghost" size="sm" className="w-full justify-start h-8 text-xs hover:bg-primary/10">
-          <Search className="mr-2 h-3 w-3" />
-          Search
-        </Button>
-        <Button variant="ghost" size="sm" className="w-full justify-start h-8 text-xs hover:bg-primary/10">
-          <Folder className="mr-2 h-3 w-3" />
-          Browse
-        </Button>
-        <Button variant="ghost" size="sm" className="w-full justify-start h-8 text-xs hover:bg-primary/10">
-          <Settings className="mr-2 h-3 w-3" />
-          Settings
-        </Button>
-      </div>
     </div>
   );
 };

@@ -12,8 +12,8 @@ const Home = () => {
 
         {/* Editor - 75% width */}
         <div className="flex-1 min-w-0">
-          <div className="border border-zinc-300/50 rounded-lg h-full overflow-hidden">
-            <div className="p-4 border-b border-glass-border/30">
+          <div className="border border-zinc-300/25 rounded-lg h-full overflow-hidden">
+            <div className="p-4 border-b border-zinc-300/25">
               <h1 className="text-xl font-bold glow-text">
                 Chapter 1
               </h1>

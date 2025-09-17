@@ -70,8 +70,24 @@
   padding-left: 2rem;
 }
 
+/* Ensure list markers are visible despite global resets */
+.ProseMirror ul {
+  list-style-type: disc;
+  list-style-position: outside;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  list-style-position: outside;
+}
+
 .ProseMirror li {
   margin: 0.25rem 0;
+  color: hsl(var(--foreground));
+}
+
+/* Make sure bullet/number markers inherit readable color */
+.ProseMirror li::marker {
   color: hsl(var(--foreground));
 }
 
